@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { submitFeedback } from "../../../services/feedbackApi";
+import { toast } from "react-hot-toast";
+import { IoWarningOutline } from "react-icons/io5";
 
 const features = [
-  { id: "symptobot", label: "SymptoBot", icon: "🤖" },
   { id: "checker", label: "Symptom Checker", icon: "📋" },
   { id: "doctor", label: "Doctor Consultation", icon: "👨‍⚕️" },
   { id: "website", label: "Overall Website", icon: "💻" },
@@ -10,6 +12,7 @@ const features = [
 const Feedback: React.FC = () => {
   const [featuresUsed, setFeaturesUsed] = useState<string[]>([]);
   const [rating, setRating] = useState<number>(0);
+  const [experience, setExperience] = useState<string>("");
   const [recommend, setRecommend] = useState<"yes" | "no">("yes");
 
   /* Toggle feature selection */
@@ -26,6 +29,36 @@ const Feedback: React.FC = () => {
     setRating((prev) => (prev === star ? 0 : star));
   };
 
+  /* SUBMIT FUNCTION (CONNECTED TO BACKEND) */
+  const handleSubmit = async () => {
+    if (!rating || !experience) {
+    toast("Please fill required fields", {
+      icon: <IoWarningOutline className="text-amber-600 text-xl"/>,
+      className: "border-2 border-amber-500 bg-yellow-50 text-yellow-800 font-medium",
+    });
+      return;
+    }
+
+    try {
+      await submitFeedback({
+        rating: Number(rating),
+        experience,
+      });
+
+      alert("Feedback submitted successfully!");
+
+      // Reset form
+      setRating(0);
+      setExperience("");
+      setFeaturesUsed([]);
+      setRecommend("yes");
+
+    } catch (error) {
+      console.error(error);
+      alert("Error submitting feedback");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-blue-50 p-6">
       <div className="bg-white w-full rounded-xl shadow-lg p-6">
@@ -35,7 +68,7 @@ const Feedback: React.FC = () => {
           Help us improve SymptoNexus.
         </p>
 
-        {/* Feature Selection (Multiple) */}
+        {/* Feature Selection */}
         <p className="font-medium mb-3">Which feature did you use?</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {features.map((item) => {
@@ -80,26 +113,27 @@ const Feedback: React.FC = () => {
           })}
         </div>
 
-        {/* Website Experience */}
+        {/* Experience (CONNECTED) */}
         <label className="text-sm font-medium">
           How was your experience with our website?
         </label>
         <textarea
+          value={experience}
+          onChange={(e) => setExperience(e.target.value)}
           className="w-full mt-1 mb-4 p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Tell us about usability, speed, or design."
         />
 
-        {/* What went well */}
+        {/* Other fields (UI only for now) */}
         <label className="text-sm font-medium">What went well?</label>
         <textarea
-          className="w-full mt-1 mb-4 p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full mt-1 mb-4 p-3 border rounded-lg text-sm"
           placeholder="I'd love to hear about what you found helpful or enjoyed."
         />
 
-        {/* Improvements */}
         <label className="text-sm font-medium">What could be improved?</label>
         <textarea
-          className="w-full mt-1 mb-6 p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full mt-1 mb-6 p-3 border rounded-lg text-sm"
           placeholder="Please let us know what we could do better."
         />
 
@@ -127,7 +161,10 @@ const Feedback: React.FC = () => {
         </div>
 
         {/* Submit */}
-        <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition">
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition"
+        >
           Submit Feedback
         </button>
       </div>

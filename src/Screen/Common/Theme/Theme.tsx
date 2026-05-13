@@ -25,13 +25,13 @@ const Theme: React.FC = () => {
       onClick={toggleTheme}
       className="
         flex items-center justify-center
-        w-10 h-10 rounded-full
-        border transition-all duration-300
+        w-[35px] h-[35px] rounded-full
+        transition-all duration-300
         
-        bg-blue-50 text-cyan-700 border-blue-50
+        bg-gray-50 text-cyan-700
         hover:bg-blue-100
         
-        dark:bg-sky-700 dark:text-yellow-300 dark:border-cyan-800
+        dark:bg-sky-700 dark:text-yellow-300
         dark:hover:bg-cyan-800
       "
     >

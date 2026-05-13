@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { submitFeedback } from "../../../services/feedbackApi";
+import { toast } from "react-hot-toast";
+import { IoWarningOutline } from "react-icons/io5";
 
 const DoctorFeedback: React.FC = () => {
 
@@ -30,16 +33,43 @@ const DoctorFeedback: React.FC = () => {
 
   };
 
+const handleSubmit = async () => {
+  if (!rating || !consultExperience) {
+    toast("Please fill required fields", {
+      icon: <IoWarningOutline className="text-amber-600 text-xl"/>,
+      className: "border-2 border-amber-500 bg-yellow-50 text-yellow-800 font-medium",
+    });
+    return;
+  }
 
+  // Combine all text into ONE experience string
+  const combinedExperience = `
+Consultation: ${consultExperience}
+Platform: ${platformEase}
+Suggestions: ${suggestions}
+Recommendation: ${recommend}
+  `;
 
-  /* Submit (frontend only) */
-  const handleSubmit = () => {
+  try {
+    await submitFeedback({
+      rating: Number(rating),
+      experience: combinedExperience,
+    });
 
-    alert(
-      "Thank you for your feedback!"
-    );
+    toast.success("Feedback submitted successfully!");
 
-  };
+    // Reset form
+    setRating(0);
+    setConsultExperience("");
+    setPlatformEase("");
+    setSuggestions("");
+    setRecommend("yes");
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Error submitting feedback");
+  }
+};
 
 
 
