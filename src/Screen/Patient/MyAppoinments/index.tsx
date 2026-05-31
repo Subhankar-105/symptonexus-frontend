@@ -450,8 +450,6 @@ useEffect(() => {
                           </div>
                         </td>
 
-
-
                         <td className="p-4">
                           <div className="flex gap-2 justify items-center">
                             <FaUserDoctor className="text-sm text-cyan-600 dark:text-cyan-700" />

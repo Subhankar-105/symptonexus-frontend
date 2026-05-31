@@ -665,5 +665,3 @@ export const DOCTOR_SPECIALIZATIONS = [
   { label: "Gynecologist", value: 12, department: "Gynecology" }
 
 ];
-
-
